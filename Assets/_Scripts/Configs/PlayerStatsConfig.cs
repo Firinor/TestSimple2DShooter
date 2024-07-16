@@ -4,7 +4,7 @@
 public class PlayerStatsConfig : ScriptableObject
 {
     public float Speed;
-    public float AttackSpeed;
+    public float AttackCooldown;
     public float AttackRadius;
     public int Attack;
 }

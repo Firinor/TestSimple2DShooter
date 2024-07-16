@@ -1,13 +1,34 @@
 using System;
 using UnityEngine;
 
-public class Enemy : MonoBehaviour
+[RequireComponent(typeof(Animator))]
+public class Enemy : MonoBehaviour, ICanPause
 {
-    public Action<Enemy> OnDeath;
+    public Action<Enemy> OnEnd;
     public EnemyStats stats;
 
     private string bulletTag = "Bullet";
     private string targetTag = "ZombieTarget";
+
+    private LevelData level;
+
+    private void Awake()
+    {
+        level = ServiseLocator.instance.GetService<LevelData>();
+        ((ICanPause)this).SubscribeToPause();
+    }
+
+    private void OnEnable()
+    {
+        GetRandomSkin();
+    }
+
+    private void GetRandomSkin()
+    {
+        Animator animator = GetComponent<Animator>();
+        int random = UnityEngine.Random.Range(0, 4);
+        animator.Play("WalkDown" + random);
+    }
 
     private void Update()
     {
@@ -19,16 +40,34 @@ public class Enemy : MonoBehaviour
         if (other.tag == bulletTag)
         {
             ref int health = ref stats.Health;
-            health -= other.GetComponent<Bullet>().Damage;
-            if(health <= 0)
-                OnDeath?.Invoke(this);
+            Bullet bullet = other.GetComponent<Bullet>();
+            health -= bullet.Damage;
+            bullet.OnEnd?.Invoke(bullet);
+            if (health <= 0)
+            {
+                level.EnemyCount.Value--;
+                OnEnd?.Invoke(this);
+            }
             return;
         }
 
         if (other.tag == targetTag)
         {
-            ServiseLocator.instance.GetService<LevelData>().PlayerHealth--;
-            OnDeath?.Invoke(this);
+            level.PlayerHealth.Value--;
+            level.EnemyCount.Value--;
+
+            OnEnd?.Invoke(this);
         }
+    }
+
+    public void Pause()
+    {
+        GetComponent<Animator>().enabled = false;
+        enabled = false;
+    }
+
+    private void OnDestroy()
+    {
+        ((ICanPause)this).Unsubscribe();
     }
 }

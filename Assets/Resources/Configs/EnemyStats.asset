@@ -12,7 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 357498d02b6132a42be921c7f480d9c4, type: 3}
   m_Name: EnemyStats
   m_EditorClassIdentifier: 
-  Speed: {x: 1.2511251, y: 7.9117928}
-  SpawnSpeed: {x: 2.4566224, y: 5.3219852}
-  Count: {x: 9, y: 22}
+  Speed: {x: 0.56838274, y: 3.16201}
   Health: 100

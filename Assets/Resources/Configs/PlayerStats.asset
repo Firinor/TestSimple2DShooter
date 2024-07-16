@@ -13,6 +13,6 @@ MonoBehaviour:
   m_Name: PlayerStats
   m_EditorClassIdentifier: 
   Speed: 150
-  AttackSpeed: 0.2
-  AttackRadius: 5
+  AttackCooldown: 0.5
+  AttackRadius: 3
   Attack: 35
